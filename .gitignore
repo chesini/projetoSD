@@ -1,2 +1,19 @@
+<<<<<<< HEAD
 .tmp.drivedownload/
 build/
+=======
+# Created by https://www.gitignore.io/api/netbeans
+# Edit at https://www.gitignore.io/?templates=netbeans
+
+### NetBeans ###
+**/nbproject/private/
+**/nbproject/Makefile-*.mk
+**/nbproject/Package-*.bash
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+.build/
+# End of https://www.gitignore.io/api/netbeans
+>>>>>>> d06897f071283c0870e7222a1d1e188108a54e23
