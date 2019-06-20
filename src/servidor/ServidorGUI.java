@@ -184,6 +184,16 @@ public class ServidorGUI extends javax.swing.JFrame {
             this.outputLog.setText(outputLog.getText().concat(msg) + '\n');
             
         }
+        
+        if(fluxo == 'p'){
+            this.readyList.setText(msg);
+            
+        }
+        
+        if(fluxo == 'c'){
+            this.conectedList.setText(msg);
+            
+        }
     }
     
     /**

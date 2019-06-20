@@ -26,14 +26,16 @@ public class Connection extends Thread {
 
     JSONArray objArray;
     ArrayList<Socket> sktArray;
+    JSONArray readyArray;
     JSONArray CliOrigem;
     
-    public Connection( ServidorGUI gui, int i, Socket aClientSocket, JSONArray cliArray, ArrayList<Socket> socketArray ) {
+    public Connection( ServidorGUI gui, int i, Socket aClientSocket, JSONArray cliArray, ArrayList<Socket> socketArray, JSONArray readyArray ) {
         this.gui = gui;
         this.i = i;
         clientSocket = aClientSocket;
         objArray = cliArray;
         sktArray = socketArray;
+        this.readyArray = readyArray;
         
         try{
                
@@ -149,6 +151,45 @@ public class Connection extends Thread {
         }
         
         if (msgRec.COD.equals("pronto")){
+            int k = 0;
+            
+            // Atualiza a lista de prontos em Servidor
+            if(msgRec.STATUS.equals("sucesso")){
+                try{
+                    this.readyArray.put(objArray.getJSONObject(this.i));
+
+                    retorno.COD = "rpronto";
+                    retorno.STATUS = "sucesso";
+
+                    buffWriter.write(retorno.toStr() + "\r\n");
+                    buffWriter.flush();
+                    gui.refreshGUI('o', retorno.toStr());
+
+                }catch(JSONException e){
+                    
+                }
+
+            }else{
+                while(k < this.readyArray.length() &&
+                      !this.readyArray.getJSONObject(k).getString("NOME").equals(msgRec.NOME)
+                ) k++;
+                
+                this.readyArray.remove(k);
+            }
+            
+            // Atualiza a lista de prontos na GUI
+            String aux = "";
+            for(k = 0; k < readyArray.length(); k++){
+                aux = aux.concat(this.readyArray.getJSONObject(k).getString("NOME").concat("\n"));
+            }
+            gui.refreshGUI('p', aux);
+            
+            // Manda a lista de prontos broadcast
+            retorno.COD = "listapronto";
+            retorno.STATUS = "null";
+            retorno.LISTACLIENTE = readyArray;
+            
+            sendBroadcast(retorno);
             
         }
         
@@ -206,7 +247,7 @@ public class Connection extends Thread {
             for(i = 0; i < objArray.length(); i++){
                 aux = aux.concat(objArray.getJSONObject(i).getString("NOME").concat("\n"));
             }
-            this.gui.conectedList.setText(aux);
+            gui.refreshGUI('c', aux);
             
         }catch(JSONException e){
             System.out.println("Erro ao alterar Lista de clientes: " + e);

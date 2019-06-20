@@ -39,10 +39,10 @@ public class Servidor
         serverPort = gui.serverPort;
         initServer();
 
-        Socket clientSocket = null;         // cria o socket do cliente
-        ArrayList<Socket> socketArray = new ArrayList();
-        JSONArray cliArray = new JSONArray();
-        //JSONArray = readyArray = new JSONArray();
+        Socket clientSocket = null;                         // cria o socket do cliente
+        ArrayList<Socket> socketArray = new ArrayList();    // Lista de sockets de clientes no servidor
+        JSONArray cliArray = new JSONArray();               // Lista de objetos JSON dos clientes conectados: {"IP": "", "PORTA": "", "NOME": ""}
+        JSONArray readyArray = new JSONArray();             // Lista de prontos
         int i = 0;
 
         while (true)
@@ -56,7 +56,7 @@ public class Servidor
                 socketArray.add(clientSocket);
                 i = socketArray.size() - 1; // indexa o SocketArray e cliArray
                 
-                Connection c = new Connection(gui, i, clientSocket, cliArray, socketArray);
+                Connection c = new Connection(gui, i, clientSocket, cliArray, socketArray, readyArray);
                 System.out.println("Conectado com " + clientSocket.getRemoteSocketAddress());            
                 //echoServer.close();
 

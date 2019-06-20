@@ -9,7 +9,8 @@
         </group>
         <group name="NetBeansProjects">
             <file>file:/D:/Users/Leandro/NetBeansProjects/ProjetoSD/src/servidor/ServidorGUI.java</file>
-            <file>file:/D:/Users/Leandro/NetBeansProjects/ProjetoSD/src/projetoSD/Mensagem.java</file>
+            <file>file:/D:/Users/Leandro/NetBeansProjects/ProjetoSD/src/cliente/ClienteGUI.java</file>
+            <file>file:/D:/Users/Leandro/NetBeansProjects/ProjetoSD/src/cliente/Cliente.java</file>
             <file>file:/D:/Users/Leandro/NetBeansProjects/ProjetoSD/src/servidor/Servidor.java</file>
             <file>file:/D:/Users/Leandro/NetBeansProjects/ProjetoSD/src/servidor/Connection.java</file>
         </group>

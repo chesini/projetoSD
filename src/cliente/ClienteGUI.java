@@ -202,7 +202,7 @@ public class ClienteGUI extends javax.swing.JFrame {
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE))
                         .addGap(21, 21, 21))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 457, Short.MAX_VALUE)
                         .addComponent(sendGame)
                         .addGap(11, 11, 11))))
         );
