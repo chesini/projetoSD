@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import projetoSD.Mensagem;
+import java.util.Random;
+
         
 /**
  *
@@ -296,4 +298,40 @@ public class Connection extends Thread {
             }
         }
     }
+    
+    public void sendNum(){
+        int NumSorteados[] = new int[76]; // de 0 a 75... pos 0 nao usa
+        int i, num;
+        
+        for(i = 0; i < NumSorteados.length; i++){ //inicializando todos com -1
+            NumSorteados[i] = -1;
+        }
+        
+        while(/*estiver jogando*/){
+            
+            Random aux = new Random();
+            num = aux.nextInt(75);
+            
+            if(num == 0 || NumSorteados[num] != -1){
+                System.out.println("numero ja foi sorteado ou num = 0");
+            }
+            if(NumSorteados[num] == -1){ // logica de enviar os numeros aqui
+                
+                
+                
+                
+                
+                NumSorteados[num] = 1; //marcar que o numero foi sorteado no vetor
+            }
+        
+        }
+        
+
+
 }
+
+
+
+}
+
+ 
