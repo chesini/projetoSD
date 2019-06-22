@@ -3,7 +3,9 @@ import org.json.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-import projetoSD.Mensagem;
+import java.util.TimerTask;
+import projetoSD.*;
+
         
 /**
  *
@@ -14,7 +16,7 @@ import projetoSD.Mensagem;
 public class Connection extends Thread {
     ServidorGUI gui;
     int i;
-
+   
     Socket clientSocket;
     String line;                        // string para conter informações transferidas
     InputStream is;
@@ -28,7 +30,11 @@ public class Connection extends Thread {
     ArrayList<Socket> sktArray;
     JSONArray readyArray;
     JSONArray CliOrigem;
+    ContaTempo ct = new ContaTempo(30);
+    public Thread t = new Thread (ct);
     
+    //public static Thread timex = new ContaTempo(-1);
+            
     public Connection( ServidorGUI gui, int i, Socket aClientSocket, JSONArray cliArray, ArrayList<Socket> socketArray, JSONArray readyArray ) {
         this.gui = gui;
         this.i = i;
@@ -149,9 +155,10 @@ public class Connection extends Thread {
                 sendBroadcast(retorno);                            
             }
         }
-        
+       
         if (msgRec.COD.equals("pronto")){
             int k = 0;
+           
             
             // Atualiza a lista de prontos em Servidor
             if(msgRec.STATUS.equals("sucesso")){
@@ -164,17 +171,27 @@ public class Connection extends Thread {
                     buffWriter.write(retorno.toStr() + "\r\n");
                     buffWriter.flush();
                     gui.refreshGUI('o', retorno.toStr());
+                    t.start();
+                    //ContaTempo.setCount(30);
+                    System.out.println("aki?");
+                    
 
                 }catch(JSONException e){
                     
                 }
 
-            }else{
-                while(k < this.readyArray.length() &&
+            }else if(msgRec.STATUS.equals("falha")){
+                t.stop();
+               while(k < this.readyArray.length() &&
                       !this.readyArray.getJSONObject(k).getString("NOME").equals(msgRec.NOME)
                 ) k++;
-                
                 this.readyArray.remove(k);
+                if(this.readyArray.length()>0){// se ainda tem jogador na lista de pronto, reseta o timer
+                    
+                }else if(this.readyArray.length()==0){ // se nao tem mais jogador na lista de pronto, para o timer
+                    
+                }
+                
             }
             
             // Atualiza a lista de prontos na GUI
@@ -191,6 +208,9 @@ public class Connection extends Thread {
             
             sendBroadcast(retorno);
             
+            
+            //System.out.println("terminou contagem");
+            
         }
         
         if (msgRec.COD.equals("marca")){
@@ -201,7 +221,28 @@ public class Connection extends Thread {
         
         return retorno;
     }
-    
+    /*private int ContaTempo(int count){
+        timer = new java.util.Timer(); //new timer
+        task = new TimerTask() {
+            int aux = count;
+            public void run() {                
+                System.out.println(Integer.toString(aux)); 
+                //System.out.println(isIt);
+                aux--;
+                if (aux == -1){
+                    timer.cancel(); 
+                    
+                }else if(isIt){
+                    cancel();
+                    timer.cancel();
+                    //isIt = false;
+                }
+            }
+        };
+       // task.cancel();
+       timer.scheduleAtFixedRate(task, 1000, 1000); // =  timer.scheduleAtFixedRate(task, delay, period
+       return 1;
+    }*/
     private void MandarListaCli(Mensagem msgRec, int op){
         Mensagem msgSend = new Mensagem();
         int i = 0;
