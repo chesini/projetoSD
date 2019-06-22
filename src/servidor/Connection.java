@@ -13,7 +13,6 @@ import projetoSD.Mensagem;
  */
 public class Connection extends Thread {
     ServidorGUI gui;
-    int i;
 
     Socket clientSocket;
     String line;                        // string para conter informações transferidas
@@ -29,9 +28,8 @@ public class Connection extends Thread {
     JSONArray readyArray;
     JSONArray CliOrigem;
     
-    public Connection( ServidorGUI gui, int i, Socket aClientSocket, JSONArray cliArray, ArrayList<Socket> socketArray, JSONArray readyArray ) {
+    public Connection( ServidorGUI gui, Socket aClientSocket, JSONArray cliArray, ArrayList<Socket> socketArray, JSONArray readyArray ) {
         this.gui = gui;
-        this.i = i;
         clientSocket = aClientSocket;
         objArray = cliArray;
         sktArray = socketArray;
@@ -87,7 +85,7 @@ public class Connection extends Thread {
             }
         }
     }
-    
+        
     /*
      * Faz a identificacao das mensagem recebida e o devido retorno
      */
@@ -156,7 +154,12 @@ public class Connection extends Thread {
             // Atualiza a lista de prontos em Servidor
             if(msgRec.STATUS.equals("sucesso")){
                 try{
-                    this.readyArray.put(objArray.getJSONObject(this.i));
+                    k = 0;
+                    while(k < this.sktArray.size() &&
+                          this.sktArray.get(k) != this.clientSocket
+                    ) k++;
+                        
+                    this.readyArray.put(objArray.getJSONObject(k));
 
                     retorno.COD = "rpronto";
                     retorno.STATUS = "sucesso";
@@ -169,18 +172,31 @@ public class Connection extends Thread {
                     
                 }
 
-            }else{
-                while(k < this.readyArray.length() &&
-                      !this.readyArray.getJSONObject(k).getString("NOME").equals(msgRec.NOME)
-                ) k++;
-                
-                this.readyArray.remove(k);
+            }else if(msgRec.STATUS.equals("falha")){
+                try{
+                    k = 0;
+                    while(k < this.readyArray.length() &&
+                          !this.readyArray.getJSONObject(k).getString("NOME").equals(msgRec.NOME)
+                    ) k++;
+
+                    this.readyArray.remove(k);
+                    
+                    retorno.COD = "rpronto";
+                    retorno.STATUS = "sucesso";
+
+                    buffWriter.write(retorno.toStr() + "\r\n");
+                    buffWriter.flush();
+                    gui.refreshGUI('o', retorno.toStr());
+                }catch(JSONException e){
+                    
+                }
             }
             
             // Atualiza a lista de prontos na GUI
             String aux = "";
             for(k = 0; k < readyArray.length(); k++){
                 aux = aux.concat(this.readyArray.getJSONObject(k).getString("NOME").concat("\n"));
+                
             }
             gui.refreshGUI('p', aux);
             
@@ -206,6 +222,7 @@ public class Connection extends Thread {
         Mensagem msgSend = new Mensagem();
         int i = 0;
         
+        
         try{
             //conectou
             if (op == 1){
@@ -225,13 +242,19 @@ public class Connection extends Thread {
             
             //desconectou
             if(op == 2){
+                System.out.println("Usuario " + msgRec.NOME + " desconectou!");
                 
                 // Remove usuario da lista de usuarios
-                System.out.println("Usuario " + msgRec.NOME + " desconectou!");
                 i = 0;
                 while(i < objArray.length() && msgRec.NOME.equals(objArray.getJSONObject(i).getString("NOME")) != true)
                     i++;
                 objArray.remove(i);
+                
+                // Remove usuario da lista de prontos no servidor
+                i = 0;
+                while(i < readyArray.length() && msgRec.NOME.equals(readyArray.getJSONObject(i).getString("NOME")) != true)
+                    i++;
+                readyArray.remove(i);
                 
                 // Remove cliente da lista de sockets
                 i = 0;
@@ -239,9 +262,7 @@ public class Connection extends Thread {
                     i++;
                 sktArray.remove(i);
                 
-
             }
-            
             
             String aux = "";
             for(i = 0; i < objArray.length(); i++){
@@ -262,6 +283,12 @@ public class Connection extends Thread {
             msgSend.LISTACLIENTE = objArray;
             
             sendBroadcast(msgSend);
+            
+            msgSend = new Mensagem();
+            msgSend.COD = "listapronto";
+            msgSend.LISTACLIENTE = readyArray;
+            
+            sendBroadcast(msgSend);
 
         }catch (IOException e) {
                 System.err.println("Erro ao enviar lista de clientes");
@@ -276,7 +303,6 @@ public class Connection extends Thread {
             System.out.println("DESTINO:: " + destino.get(0));
             try{
                 
-
                 // Encontra o indice do destino
                 while(k < objArray.length() && 
                       !objArray.getJSONObject(k).getString("NOME").equals(destino.getJSONObject(0).getString("NOME"))
@@ -293,16 +319,21 @@ public class Connection extends Thread {
 
             }catch(IOException e){
                 // Mexer nisso aqui pra remover da lista quando da erro de conexao (cliente fecha errado)
-                //System.out.println("Erro ao enviar broadcast: " + e);
-                System.out.println("Cliente com conexão interrompida, removendo..");
-                this.sktArray.remove(k);
-                this.objArray.remove(k);
+                System.out.println("Erro ao enviar unicast: " + e);
+                removeDisconnected(k);
+
+                //System.out.println("Cliente com conexão interrompida, removendo..");
+                //this.sktArray.remove(k);
+                //this.objArray.remove(k);
+            
+            }catch(IndexOutOfBoundsException e){
+                // Encontra o cliente que está desconectado
+                System.out.println("Erro ao enviar unicast: " + e);
+                removeDisconnected(k);
+
+                //System.out.println("Cliente com conexão interrompida, removendo.. " + e);
+                //MandarListaCli(null, 0);
             }
-            
-            
-            //Continuar Daqui
-            // Problema: "sincronizar" os arrays objArray e socketArray para poder usar o indice de objArray para obter o
-            // nome e socketArray para enviar a msg.
             
         }
     }
@@ -325,10 +356,9 @@ public class Connection extends Thread {
 
                     }catch(IOException e){
                         // Mexer nisso aqui pra remover da lista quando da erro de conexao (cliente fecha errado)
-                        //System.out.println("Erro ao enviar broadcast: " + e);
-                        System.out.println("Cliente com conexão interrompida, removendo..");
-                        this.sktArray.remove(i);
-                        this.objArray.remove(i);
+                        System.out.println("Erro ao enviar broadcast: " + e);
+                        //System.out.println("Cliente com conexão interrompida, removendo..");
+                        removeDisconnected(i);
                     }
                 }
             }catch(JSONException e){
@@ -337,4 +367,35 @@ public class Connection extends Thread {
             }
         }
     }
+    void removeDisconnected(int k){
+        try{
+            // Remove o cliente das listas de sockets, objetos JSON e prontos
+            System.out.println("Removendo cliente desconectado");
+
+            // Percorre a lista de prontos e procura um nome igual ao do
+            // cliente que deu erro
+            for(int j = 0; j < readyArray.length(); j++){
+                if(readyArray.getJSONObject(j).getString("NOME")
+                        .equals(objArray.getJSONObject(k).getString("NOME"))){
+
+                    readyArray.remove(j);
+                }
+            }
+
+            objArray.remove(k);
+            sktArray.remove(k);
+            
+
+            MandarListaCli(null, 0);
+            //this.interrupt();
+            
+        }catch(JSONException e){
+            System.out.println("Erro na remocao de cliente desconectado: " + e);
+            
+        }catch(IndexOutOfBoundsException e){
+            System.out.println("Erro na remocao de cliente desconectado: " + e);
+            
+        }
+    }
+
 }

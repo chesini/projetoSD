@@ -81,6 +81,9 @@ public class ClienteGUI extends javax.swing.JFrame {
         chatLabel = new javax.swing.JLabel();
         statusLabel = new javax.swing.JLabel();
         windowTitle = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        readyList = new javax.swing.JTextPane();
+        readyTitle = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -133,6 +136,11 @@ public class ClienteGUI extends javax.swing.JFrame {
         windowTitle.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         windowTitle.setText("BINGO NA LAN");
 
+        readyList.setEnabled(false);
+        jScrollPane3.setViewportView(readyList);
+
+        readyTitle.setText("Jogadores Prontos:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -167,20 +175,29 @@ public class ClienteGUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(sendLogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(sendMsg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(sendMsg, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE))
                         .addGap(10, 10, 10)))
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(153, 153, 153)
-                .addComponent(sendGame)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(71, 71, 71)
+                        .addComponent(sendGame))
+                    .addComponent(readyTitle))
                 .addGap(120, 120, 120))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(sendGame)
+                .addGap(11, 11, 11))
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(statusLabel)
                             .addComponent(windowTitle)
@@ -199,12 +216,13 @@ public class ClienteGUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane1)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE))
-                        .addGap(21, 21, 21))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 457, Short.MAX_VALUE)
-                        .addComponent(sendGame)
-                        .addGap(11, 11, 11))))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(38, 38, 38)
+                        .addComponent(readyTitle)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         pack();
@@ -308,10 +326,13 @@ public class ClienteGUI extends javax.swing.JFrame {
     private javax.swing.JLabel clientsLabel;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel loggedLabel;
     private javax.swing.JTextField msgContent;
     private javax.swing.JLabel msgLabel;
+    protected javax.swing.JTextPane readyList;
+    private javax.swing.JLabel readyTitle;
     protected javax.swing.JButton sendGame;
     private javax.swing.JButton sendLogout;
     private javax.swing.JButton sendMsg;
