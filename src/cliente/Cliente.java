@@ -14,6 +14,7 @@ public class Cliente {
     static ClienteGUI gui;
     static String NOME;
     static JSONArray LISTACLIENTE;
+    static JSONArray LISTAPRONTO;
 
     public static void main(String[] args) throws IOException {
         InputStream is;
@@ -101,12 +102,14 @@ public class Cliente {
                                 break;
                             }
                             
-                            case "chat":{
-                                refreshGUI("chat", msg);
+                            case "listapronto":{
+                                LISTAPRONTO = msg.LISTACLIENTE;
+                                refreshGUI("listapronto", msg);
                                 break;
                             }
                             
-                            case "listapronto":{
+                            case "chat":{
+                                refreshGUI("chat", msg);
                                 break;
                             }
                             
@@ -277,6 +280,22 @@ public class Cliente {
             }
             
             case "listapronto":{
+                System.out.println("listapronto");
+                String aux = "";
+                
+                if(LISTAPRONTO != null && LISTAPRONTO != JSONObject.NULL){
+                    try{
+                        for(int i = 0; i < LISTAPRONTO.length(); i++){
+                            aux = aux.concat(LISTAPRONTO.getJSONObject(i).getString("NOME").concat("\n"));
+                        }
+
+                    }catch(JSONException e){
+                        System.out.println("Erro ao listar prontos: " + e);
+                    }
+                }
+                
+                gui.readyList.setText(aux);
+                
                 break;
             }
 

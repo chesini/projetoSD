@@ -54,9 +54,7 @@ public class Servidor
                 
                 // Adiciona o cliente atual na lista de sockets do servidor
                 socketArray.add(clientSocket);
-                i = socketArray.size() - 1; // indexa o SocketArray e cliArray
-                
-                Connection c = new Connection(gui, i, clientSocket, cliArray, socketArray, readyArray);
+                Connection c = new Connection(gui, clientSocket, cliArray, socketArray, readyArray);
                 System.out.println("Conectado com " + clientSocket.getRemoteSocketAddress());            
                 //echoServer.close();
 

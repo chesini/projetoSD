@@ -24,10 +24,10 @@ public class Mensagem {
     
     // Inicializar as variaveis com null
     public Mensagem(){
-        this.COD = "null";
-        this.NOME = "null";
-        this.MSG = "null";
-        this.STATUS = "null";
+        this.COD = null;
+        this.NOME = null;
+        this.MSG = null;
+        this.STATUS = null;
         this.LISTACLIENTE = null;
         this.CARTELA = null;
         
@@ -35,10 +35,10 @@ public class Mensagem {
     }
     
     public Mensagem(String str){
-        this.COD = "null";
-        this.NOME = "null";
-        this.MSG = "null";
-        this.STATUS = "null";
+        this.COD = null;
+        this.NOME = null;
+        this.MSG = null;
+        this.STATUS = null;
         this.LISTACLIENTE = null;
         this.CARTELA = null;
         
@@ -48,10 +48,10 @@ public class Mensagem {
     }   
     
     public Mensagem(JSONObject obj){
-        this.COD = "null";
-        this.NOME = "null";
-        this.MSG = "null";
-        this.STATUS = "null";
+        this.COD = null;
+        this.NOME = null;
+        this.MSG = null;
+        this.STATUS = null;
         this.LISTACLIENTE = null;
         this.CARTELA = null;
         
@@ -62,11 +62,30 @@ public class Mensagem {
     
     public String toStr(){
         try{
-            this.JSON.put("COD", this.COD);
-            this.JSON.put("NOME", this.NOME);
-            this.JSON.put("MSG", this.MSG);
-            this.JSON.put("STATUS", this.STATUS);
-
+            if(this.COD != null){
+                this.JSON.put("COD", this.COD);
+            }else{
+                this.JSON.put("COD", JSONObject.NULL);
+            }
+            
+            if(this.NOME != null){
+                this.JSON.put("NOME", this.NOME);
+            }else{
+                this.JSON.put("NOME", JSONObject.NULL);
+            }
+            
+            if(this.MSG != null){
+                this.JSON.put("MSG", this.MSG);
+            }else{
+                this.JSON.put("MSG", JSONObject.NULL);
+            }
+            
+            if(this.STATUS != null){
+                this.JSON.put("STATUS", this.STATUS);
+            }else{
+                this.JSON.put("STATUS", JSONObject.NULL);
+            }
+          
             if(this.LISTACLIENTE != null){
                 this.JSON.put("LISTACLIENTE", this.LISTACLIENTE);
             }else{
@@ -78,8 +97,6 @@ public class Mensagem {
             }else{
                 this.JSON.put("CARTELA", JSONObject.NULL);
             }
-                
-            
             
         }catch(JSONException e){
             System.out.println("Erro ao transformar objeto JSON para str: " + e);
