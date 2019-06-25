@@ -46,6 +46,9 @@ public class Connection extends Thread {
         sktArray = socketArray;
         this.readyArray = readyArray;
         t.start();
+        
+        game = mainGame;
+        
         try{
                
             is = aClientSocket.getInputStream();
@@ -181,9 +184,11 @@ public class Connection extends Thread {
                     buffWriter.write(retorno.toStr() + "\r\n");
                     buffWriter.flush();
                     gui.refreshGUI('o', retorno.toStr());
-                  System.out.println("startou");
-                ct.setCount(30);
-                System.out.println(ct.getCount());
+		            System.out.println("startou");
+	                ct.setCount(30);
+        	        System.out.println(ct.getCount());
+                    
+                    game.setRunning(1);
 
                 }catch(JSONException e){
                     
