@@ -30,9 +30,9 @@ public class Connection extends Thread {
     ArrayList<Socket> sktArray;
     JSONArray readyArray;
     JSONArray CliOrigem;
-    ContaTempo ct = new ContaTempo(30);
+    ContaTempo ct = new ContaTempo(-1);
     public Thread t = new Thread (ct);
-    
+    //public Thread t = new ContaTempo(-1);
     //public static Thread timex = new ContaTempo(-1);
             
     public Connection( ServidorGUI gui, int i, Socket aClientSocket, JSONArray cliArray, ArrayList<Socket> socketArray, JSONArray readyArray ) {
@@ -42,7 +42,7 @@ public class Connection extends Thread {
         objArray = cliArray;
         sktArray = socketArray;
         this.readyArray = readyArray;
-        
+        t.start();
         try{
                
             is = aClientSocket.getInputStream();
@@ -62,7 +62,7 @@ public class Connection extends Thread {
 
     @Override
     public void run(){
-
+        
         try{
             //System.out.println("try");
             while (true)
@@ -158,39 +158,43 @@ public class Connection extends Thread {
        
         if (msgRec.COD.equals("pronto")){
             int k = 0;
-           
-            
+            System.out.println("entra pronto");
+             
             // Atualiza a lista de prontos em Servidor
             if(msgRec.STATUS.equals("sucesso")){
                 try{
                     this.readyArray.put(objArray.getJSONObject(this.i));
-
                     retorno.COD = "rpronto";
                     retorno.STATUS = "sucesso";
 
                     buffWriter.write(retorno.toStr() + "\r\n");
                     buffWriter.flush();
                     gui.refreshGUI('o', retorno.toStr());
-                    t.start();
-                    //ContaTempo.setCount(30);
-                    System.out.println("aki?");
-                    
-
-                }catch(JSONException e){
-                    
-                }
-
+                }catch(JSONException e){}
+ 
+               
+                
+                System.out.println("startou");
+                ct.setCount(30);
+                System.out.println(ct.getCount());
             }else if(msgRec.STATUS.equals("falha")){
-                t.stop();
                while(k < this.readyArray.length() &&
                       !this.readyArray.getJSONObject(k).getString("NOME").equals(msgRec.NOME)
                 ) k++;
                 this.readyArray.remove(k);
-                if(this.readyArray.length()>0){// se ainda tem jogador na lista de pronto, reseta o timer
-                    
+                ct.setCount(-1);
+                System.out.println(ct.getCount());
+                System.out.println("sai falha");
+                /*if(this.readyArray.length()>0){// se ainda tem jogador na lista de pronto, reseta o timer
+                    //ContaTempo.setCount(30);
+                    t.stop();
+                    ct.setCount(30);
+                    t.start();
                 }else if(this.readyArray.length()==0){ // se nao tem mais jogador na lista de pronto, para o timer
-                    
-                }
+                    t.interrupt();
+                    ct.setCount(-1);
+                    //t.start();
+                }*/
                 
             }
             

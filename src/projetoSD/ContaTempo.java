@@ -20,39 +20,39 @@ import servidor.ServidorGUI;
  */
 public class ContaTempo extends Thread implements Runnable  {
 
-    //private Boolean isIt;
-    //private java.util.Timer timer = new java.util.Timer(); //new timer
-    //private TimerTask task;
+   
     private static int count;
-    
+    private int aux;
     
     public ContaTempo(int count) {
-        System.out.println("instanciou");
         this.count = count;
+        
     }
-   
+    
+    
     public void run(){
-        try{
-            while(true){
-                int aux = getCount();
+      setCount(getCount());
+      aux = getCount();
+       // System.out.println("entra run");
+        while(true){
+            //int aux = getCount();
+            try{ 
                 ServidorGUI.timerLabel.setText(getCount() + "");
-                if(aux!= -1){
-                    System.out.println();
+                //System.out.println(aux);
+                if(getCount() > 0){
+                    
                     Thread.sleep(1000);
-                    aux--;
-                    setCount(aux);
+                    setCount(getCount()-1);
+                    aux = getCount() - 1;
+                    
+                }else{// if (aux == 0 || getCount()==-1){
+                    setCount(-1);
                 }
-                if(getCount() == -1 ){
-                    System.out.println("Acabou");
-    //                System.exit(0);
+             
+                }catch (InterruptedException e){
+                    System.out.println(e);
                 }
-                else{
-                    System.out.println("parada interrompida");
-                }
-            }
-        }catch (InterruptedException e){
-                System.out.println(e);
-            }
+        }
     }
 
     public static int getCount() {
