@@ -15,7 +15,6 @@ public class Cliente {
     static String NOME;
     static JSONArray LISTACLIENTE;
     static JSONArray LISTAPRONTO;
-    static JSONArray CARTELA;
 
     public static void main(String[] args) throws IOException {
         InputStream is;
@@ -119,7 +118,6 @@ public class Cliente {
                             }
                             
                             case "cartela":{
-                                refreshGUI("cartela", msg);
                                 break;
                             }
                             
@@ -306,12 +304,6 @@ public class Cliente {
             }
 
             case "cartela":{
-                CARTELA = msg.CARTELA;
-                
-                
-                gui.refreshTable(CARTELA);
-                
-                
                 break;
             }
 
