@@ -8,4 +8,9 @@ dist/
 nbdist/
 .nb-gradle/
 .build/
+build/classes/servidor/Servidor.class
+build/classes/cliente/Cliente.class
+build/classes/servidor/Servidor.class
+nbproject/private/private.properties
+nbproject/private/private.xml
 *.class
