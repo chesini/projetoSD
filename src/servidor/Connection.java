@@ -28,12 +28,18 @@ public class Connection extends Thread {
     JSONArray readyArray;
     JSONArray CliOrigem;
     
-    public Connection( ServidorGUI gui, Socket aClientSocket, JSONArray cliArray, ArrayList<Socket> socketArray, JSONArray readyArray ) {
+    // Variaveis para o jogo
+    Bingo game;
+    
+    
+    public Connection( ServidorGUI gui, Socket aClientSocket, JSONArray cliArray, ArrayList<Socket> socketArray, JSONArray readyArray, Bingo mainGame ) {
         this.gui = gui;
         clientSocket = aClientSocket;
         objArray = cliArray;
         sktArray = socketArray;
         this.readyArray = readyArray;
+        
+        game = mainGame;
         
         try{
                
@@ -70,6 +76,14 @@ public class Connection extends Thread {
                     
                }
                Thread.sleep(200);
+               
+               // Operacoes relacionadas ao jogo
+               /*
+               if(isPlaying){
+               }else{
+               }
+               */
+               
             }
         }catch(IOException e){
             System.out.println("Connection IOException: " + e);
@@ -167,6 +181,8 @@ public class Connection extends Thread {
                     buffWriter.write(retorno.toStr() + "\r\n");
                     buffWriter.flush();
                     gui.refreshGUI('o', retorno.toStr());
+                    
+                    game.setRunning(1);
 
                 }catch(JSONException e){
                     
