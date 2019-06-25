@@ -35,7 +35,11 @@ public class Connection extends Thread {
     //public static Thread timex = new ContaTempo(-1);
 
     
-    public Connection( ServidorGUI gui, Socket aClientSocket, JSONArray cliArray, ArrayList<Socket> socketArray, JSONArray readyArray ) {
+    // Variaveis para o jogo
+    Bingo game;
+    
+    
+    public Connection( ServidorGUI gui, Socket aClientSocket, JSONArray cliArray, ArrayList<Socket> socketArray, JSONArray readyArray, Bingo mainGame ) {
         this.gui = gui;
         clientSocket = aClientSocket;
         objArray = cliArray;
@@ -77,6 +81,14 @@ public class Connection extends Thread {
                     
                }
                Thread.sleep(200);
+               
+               // Operacoes relacionadas ao jogo
+               /*
+               if(isPlaying){
+               }else{
+               }
+               */
+               
             }
         }catch(IOException e){
             System.out.println("Connection IOException: " + e);
