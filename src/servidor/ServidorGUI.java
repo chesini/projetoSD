@@ -101,7 +101,7 @@ public class ServidorGUI extends javax.swing.JFrame {
         readyLabel.setText("Clientes Habilitados ao jogo:");
 
         timerLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        timerLabel.setText("00");
+        timerLabel.setText("jLabel1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -261,7 +261,7 @@ public class ServidorGUI extends javax.swing.JFrame {
     protected javax.swing.JTextPane readyList;
     protected javax.swing.JButton sendButton;
     private javax.swing.JLabel statusLabel;
-    public static javax.swing.JLabel timerLabel;
+    public javax.swing.JLabel timerLabel;
     protected javax.swing.JLabel windowTitle;
     // End of variables declaration//GEN-END:variables
 }

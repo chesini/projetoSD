@@ -21,8 +21,9 @@ import servidor.ServidorGUI;
 public class ContaTempo extends Thread implements Runnable  {
 
    
-    private static int count;
+    private int count;
     private int aux;
+    public boolean counting = false;
     
     public ContaTempo(int count) {
         this.count = count;
@@ -31,36 +32,34 @@ public class ContaTempo extends Thread implements Runnable  {
     
     
     public void run(){
-      setCount(getCount());
-      aux = getCount();
-       // System.out.println("entra run");
-        while(true){
-            //int aux = getCount();
-            try{ 
-                ServidorGUI.timerLabel.setText(getCount() + "");
-                //System.out.println(aux);
-                if(getCount() > 0){
-                    
-                    Thread.sleep(1000);
-                    setCount(getCount()-1);
-                    aux = getCount() - 1;
-                    
-                }else{// if (aux == 0 || getCount()==-1){
-                    setCount(-1);
+        aux = getCount();
+        System.out.println("entra run");
+        
+        try{ 
+            //ServidorGUI.timerLabel.setText(getCount() + "");
+            while(true){
+                //int aux = getCount();
+                if(counting && getCount() > -1){
+                    System.out.println("timer: " + count);
+
+                    sleep(1000);
+                    count = count - 1;
                 }
-             
-                }catch (InterruptedException e){
-                    System.out.println(e);
-                }
+            
+                sleep(5);
+            }
+
+        }catch (InterruptedException e){
+            System.out.println(e);
         }
     }
 
-    public static int getCount() {
+    public int getCount() {
         return count;
     }
 
-    public static void setCount(int count) {
-        ContaTempo.count = count;
+    public void setCount(int count) {
+        this.count = count;
     }
     
 
