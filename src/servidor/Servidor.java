@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
+import projetoSD.ContaTempo;
 
 public class Servidor
 {
@@ -18,6 +19,7 @@ public class Servidor
     private static int serverPort = 0;// porta usada para conexao.
     private static ServerSocket echoServer;// cria o socket do servidor
     private static Bingo game;
+    private static ContaTempo timer;
     
     
     public static boolean initServer(){
@@ -49,9 +51,11 @@ public class Servidor
         JSONArray cliArray = new JSONArray();               // Lista de objetos JSON dos clientes conectados: {"IP": "", "PORTA": "", "NOME": ""}
         JSONArray readyArray = new JSONArray();             // Lista de prontos
         int i = 0;
-       game = new Bingo(socketArray, readyArray);
+        game = new Bingo(socketArray, readyArray);
         
-        
+        timer = new ContaTempo(-1);
+        timer.start();
+
         while (true)
         {
             try {
@@ -61,7 +65,7 @@ public class Servidor
                 
                 // Adiciona o cliente atual na lista de sockets do servidor
                 socketArray.add(clientSocket);
-                Connection c = new Connection(gui, clientSocket, cliArray, socketArray, readyArray, game);
+                Connection c = new Connection(gui, clientSocket, cliArray, socketArray, readyArray, game, timer);
                 System.out.println("Conectado com " + clientSocket.getRemoteSocketAddress());            
                 //echoServer.close();
 

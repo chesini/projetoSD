@@ -54,6 +54,7 @@ public class Bingo extends Thread {
                 
                 if(getRunning() == 2){ // Jogo rolando: sorteio de numeros
                     // Se timer == 0 sorteia e timer = 10
+                    //System.out.println("Jogo comecou");
                 }
                 
                 
@@ -123,10 +124,9 @@ public class Bingo extends Thread {
             // Procura em sktArray o socket correspondente ao players(i)
             int k = 0;
             while(k < sktArray.size() &&
-                  !sktArray.get(k).getInetAddress().getHostAddress().equals(players.getJSONObject(i).getString("IP")) &&
-                  sktArray.get(k).getPort() != Integer.parseInt(players.getJSONObject(i).getString("PORTA"))
-            )k++;
-            
+                  0 != Integer.compare(sktArray.get(k).getPort(), Integer.parseInt(players.getJSONObject(i).getString("PORTA")))
+            ) k++;
+                        
             msg.COD = "cartela";
             msg.CARTELA = cartela;
 

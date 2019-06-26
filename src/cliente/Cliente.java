@@ -27,6 +27,9 @@ public class Cliente {
         
         //Geração do socket
         Socket ClientSocket = null;
+        
+        ContaTempo timer = new ContaTempo(0);
+        timer.start();
 
         //Rotina para entrada de dados via teclado     
         Scanner input = new Scanner(System.in);
@@ -64,6 +67,9 @@ public class Cliente {
             while (true) {
                 
                 if(buffReader.ready() == true){
+                    if(timer.getCount() <= 0){
+                        timer.counting = false;
+                    }
                     //System.out.println("in ready.");
                     String received = buffReader.readLine();
                     System.out.println("CLIENTE <- " + received);
@@ -115,6 +121,8 @@ public class Cliente {
                             }
                             
                             case "tempo":{
+                                timer.counting = true;
+                                timer.setCount(30);
                                 break;
                             }
                             
@@ -209,7 +217,9 @@ public class Cliente {
                     buffWriter.flush();
                     gui.setToSend(false);
                 }
-                Thread.sleep(200);
+                Thread.sleep(100);
+                gui.timerPane.setText(String.valueOf(timer.getCount()));
+                
             }
         } catch (UnknownHostException e) {
             System.err.println("Host desconhecido: ");
@@ -302,15 +312,13 @@ public class Cliente {
             }
 
             case "tempo":{
+                
                 break;
             }
 
             case "cartela":{
                 CARTELA = msg.CARTELA;
-                
-                
                 gui.refreshTable(CARTELA);
-                
                 
                 break;
             }

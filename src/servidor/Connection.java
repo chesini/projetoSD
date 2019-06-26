@@ -28,26 +28,31 @@ public class Connection extends Thread {
     ArrayList<Socket> sktArray;
     JSONArray readyArray;
     JSONArray CliOrigem;
-  
-    ContaTempo ct = new ContaTempo(-1);
-    public Thread t = new Thread (ct);
-    //public Thread t = new ContaTempo(-1);
-    //public static Thread timex = new ContaTempo(-1);
-
     
     // Variaveis para o jogo
     Bingo game;
+    ContaTempo timer;
     
     
-    public Connection( ServidorGUI gui, Socket aClientSocket, JSONArray cliArray, ArrayList<Socket> socketArray, JSONArray readyArray, Bingo mainGame ) {
+    public Connection( 
+            ServidorGUI gui, 
+            Socket aClientSocket, 
+            JSONArray cliArray, 
+            ArrayList<Socket> socketArray, 
+            JSONArray readyArray, 
+            Bingo mainGame, 
+            ContaTempo mainTimer 
+    ) {
+        
         this.gui = gui;
         clientSocket = aClientSocket;
         objArray = cliArray;
         sktArray = socketArray;
         this.readyArray = readyArray;
-        t.start();
+        //ct.start();
         
         game = mainGame;
+        timer = mainTimer;
         
         try{
                
@@ -81,16 +86,30 @@ public class Connection extends Thread {
                     Mensagem msgRec = new Mensagem(line);
                     parse(msgRec);
                     
+                }
+                
+                //System.out.println("Connection counting(" + timer.counting + "): " + timer.getCount());
+                
+                
+                gui.timerLabel.setText(String.valueOf(timer.getCount()));
+                
+                Thread.sleep(100);
+                if(timer.getCount() == 0 && readyArray.length() > 0 && game.getRunning() != 2){
+                    //System.out.println("AQUII " + timer.getCount());
+                    game.setRunning(1);
+                }
+                
+                if(timer.getCount() == 0 && game.getRunning() == 2){
+                    // Sorteia os numero
+                    timer.setCount(10);
                     
-               }
-               Thread.sleep(200);
-               
-               // Operacoes relacionadas ao jogo
-               /*
-               if(isPlaying){
-               }else{
-               }
-               */
+                }
+                // Operacoes relacionadas ao jogo
+                /*
+                if(isPlaying){
+                }else{
+                }
+                */
                
             }
         }catch(IOException e){
@@ -172,11 +191,16 @@ public class Connection extends Thread {
        
         if (msgRec.COD.equals("pronto")){
             int k = 0;
-            System.out.println("entra pronto");
-             
+            
             // Atualiza a lista de prontos em Servidor
             if(msgRec.STATUS.equals("sucesso")){
                 try{
+                    k = 0;
+                    while(k < this.sktArray.size() &&
+                          this.sktArray.get(k) != this.clientSocket
+                    ) k++;
+
+                    this.readyArray.put(objArray.getJSONObject(k));
 
                     retorno.COD = "rpronto";
                     retorno.STATUS = "sucesso";
@@ -184,11 +208,14 @@ public class Connection extends Thread {
                     buffWriter.write(retorno.toStr() + "\r\n");
                     buffWriter.flush();
                     gui.refreshGUI('o', retorno.toStr());
-		            System.out.println("startou");
-	                ct.setCount(30);
-        	        System.out.println(ct.getCount());
                     
-                    game.setRunning(1);
+                    timer.counting = true;
+                    timer.setCount(30);
+                    
+                    retorno.COD = "tempo";
+                    sendBroadcast(retorno);
+                    
+
 
                 }catch(JSONException e){
                     
@@ -202,20 +229,6 @@ public class Connection extends Thread {
                     ) k++;
 
                     this.readyArray.remove(k);
-                  
-                  ct.setCount(-1);
-                System.out.println(ct.getCount());
-                System.out.println("sai falha");
-                /*if(this.readyArray.length()>0){// se ainda tem jogador na lista de pronto, reseta o timer
-                    //ContaTempo.setCount(30);
-                    t.stop();
-                    ct.setCount(30);
-                    t.start();
-                }else if(this.readyArray.length()==0){ // se nao tem mais jogador na lista de pronto, para o timer
-                    t.interrupt();
-                    ct.setCount(-1);
-                    //t.start();
-                }*/
                     
                     retorno.COD = "rpronto";
                     retorno.STATUS = "sucesso";
@@ -223,6 +236,11 @@ public class Connection extends Thread {
                     buffWriter.write(retorno.toStr() + "\r\n");
                     buffWriter.flush();
                     gui.refreshGUI('o', retorno.toStr());
+                    
+                    if(this.readyArray.length() == 0){ // se nao tem mais jogador na lista de pronto, para o timer
+                        timer.counting = false;
+                        //timer.setCount(-1);
+                    }
                 }catch(JSONException e){
                     
                 }
@@ -329,6 +347,12 @@ public class Connection extends Thread {
                 aux = aux.concat(objArray.getJSONObject(i).getString("NOME").concat("\n"));
             }
             gui.refreshGUI('c', aux);
+            
+            aux = "";
+            for(i = 0; i < readyArray.length(); i++){
+                aux = aux.concat(readyArray.getJSONObject(i).getString("NOME").concat("\n"));
+            }
+            gui.refreshGUI('p', aux);
             
         }catch(JSONException e){
             System.out.println("Erro ao alterar Lista de clientes: " + e);
