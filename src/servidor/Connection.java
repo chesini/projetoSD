@@ -195,28 +195,28 @@ public class Connection extends Thread {
             // Atualiza a lista de prontos em Servidor
             if(msgRec.STATUS.equals("sucesso")){
                 try{
-                    k = 0;
-                    while(k < this.sktArray.size() &&
-                          this.sktArray.get(k) != this.clientSocket
-                    ) k++;
+                    if(game.getRunning() != 2){ // Se nao tem jogo rolando
+                        k = 0;
+                        while(k < this.sktArray.size() &&
+                              this.sktArray.get(k) != this.clientSocket
+                        ) k++;
 
-                    this.readyArray.put(objArray.getJSONObject(k));
+                        this.readyArray.put(objArray.getJSONObject(k));
 
-                    retorno.COD = "rpronto";
-                    retorno.STATUS = "sucesso";
+                        retorno.COD = "rpronto";
+                        retorno.STATUS = "sucesso";
 
-                    buffWriter.write(retorno.toStr() + "\r\n");
-                    buffWriter.flush();
-                    gui.refreshGUI('o', retorno.toStr());
+                        buffWriter.write(retorno.toStr() + "\r\n");
+                        buffWriter.flush();
+                        gui.refreshGUI('o', retorno.toStr());
                     
-                    timer.counting = true;
-                    timer.setCount(30);
-                    
-                    retorno.COD = "tempo";
-                    sendBroadcast(retorno);
-                    
+                        timer.counting = true;
+                        timer.setCount(30);
 
-
+                        retorno.COD = "tempo";
+                        sendBroadcast(retorno);
+                    }
+                    
                 }catch(JSONException e){
                     
                 }
