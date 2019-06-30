@@ -40,7 +40,7 @@ public class ContaTempo extends Thread implements Runnable  {
             while(true){
                 //int aux = getCount();
                 if(counting && getCount() > -1){
-                    System.out.println("timer: " + count);
+                    //System.out.println("timer: " + count);
 
                     sleep(1000);
                     count = count - 1;

@@ -3,6 +3,7 @@ import org.json.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.TimerTask;
 import projetoSD.*;
 
@@ -73,7 +74,8 @@ public class Connection extends Thread {
 
     @Override
     public void run(){
-        
+        Random rGen = new Random();
+        int r = 0;
         try{
             //System.out.println("try");
             while (true)
@@ -93,7 +95,6 @@ public class Connection extends Thread {
                 
                 gui.timerLabel.setText(String.valueOf(timer.getCount()));
                 
-                Thread.sleep(100);
                 if(timer.getCount() == 0 && readyArray.length() > 0 && game.getRunning() != 2){
                     //System.out.println("AQUII " + timer.getCount());
                     game.setRunning(1);
@@ -101,15 +102,25 @@ public class Connection extends Thread {
                 
                 if(timer.getCount() == 0 && game.getRunning() == 2){
                     // Sorteia os numero
+                   
+                        
+                    do{
+                        r = rGen.nextInt(75) + 1;
+                    }while(game.sorteados[r-1] == true);
+                    game.sorteados[r-1] = true;
+
+                    // Envia num sorteado broadcast
+                    Mensagem msg = new Mensagem();
+                    msg.COD = "sorteado";
+                    msg.CARTELA = new JSONArray()
+                            .put(r);
+                    
+                    sendBroadcast(msg);
+                            
                     timer.setCount(10);
                     
                 }
-                // Operacoes relacionadas ao jogo
-                /*
-                if(isPlaying){
-                }else{
-                }
-                */
+                Thread.sleep(100);
                
             }
         }catch(IOException e){
@@ -211,7 +222,7 @@ public class Connection extends Thread {
                         gui.refreshGUI('o', retorno.toStr());
                     
                         timer.counting = true;
-                        timer.setCount(30);
+                        timer.setCount(10);
 
                         retorno.COD = "tempo";
                         sendBroadcast(retorno);

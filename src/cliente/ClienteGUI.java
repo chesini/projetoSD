@@ -5,10 +5,15 @@
  */
 package cliente;
 
+import java.awt.Color;
+import java.awt.Component;
 import javax.swing.DefaultListModel;
+import javax.swing.JComponent;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import projetoSD.Mensagem;
 
 /**
  *
@@ -27,6 +32,7 @@ public class ClienteGUI extends javax.swing.JFrame {
     private String COD;
     private String STATUS;
     private JSONArray LISTACLIENTE;
+    private JSONArray CARTELA;
     private DefaultListModel modelClientList = new DefaultListModel();
     
 
@@ -90,6 +96,9 @@ public class ClienteGUI extends javax.swing.JFrame {
         jScrollPane5 = new javax.swing.JScrollPane();
         timerPane = new javax.swing.JTextPane();
         timerLabel = new javax.swing.JLabel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        sortPane = new javax.swing.JTextPane();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -176,12 +185,19 @@ public class ClienteGUI extends javax.swing.JFrame {
         });
         jScrollPane4.setViewportView(cartelaTable);
 
-        timerPane.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        timerPane.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         timerPane.setText("00");
         timerPane.setEnabled(false);
         jScrollPane5.setViewportView(timerPane);
 
         timerLabel.setText("Jogo inicia em (s):");
+
+        sortPane.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        sortPane.setEnabled(false);
+        jScrollPane6.setViewportView(sortPane);
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel1.setText("Nenhum número sorteado");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -220,28 +236,23 @@ public class ClienteGUI extends javax.swing.JFrame {
                             .addComponent(sendMsg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(10, 10, 10)))
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(timerLabel)
                     .addComponent(readyTitle)
-                    .addComponent(jScrollPane5)
-                    .addComponent(timerLabel))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(71, 71, 71)
-                        .addComponent(sendGame))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(131, 131, 131))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(35, 35, 35)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel1)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sendGame))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator1)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(sendGame)
-                .addGap(11, 11, 11))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -267,16 +278,23 @@ public class ClienteGUI extends javax.swing.JFrame {
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(38, 38, 38)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(readyTitle)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(timerLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(readyTitle)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(76, 76, 76)
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addComponent(sendGame)))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
 
@@ -368,6 +386,32 @@ public class ClienteGUI extends javax.swing.JFrame {
         
     }
     
+    protected void markTable(int num){
+        toSend = true;
+        COD = "marca";
+        
+        for(int i = 0; i < cartelaTable.getModel().getRowCount(); i++){
+            for(int j = 0; j < cartelaTable.getModel().getColumnCount(); j++){
+                //System.out.println("tab: " + Integer.parseInt(cartelaTable.getModel().getValueAt(i, j).toString()));
+                if(Integer.parseInt(cartelaTable.getModel().getValueAt(i, j).toString()) == num){
+                    System.out.println("Marca: [" + i + "][" + j + "]");
+                    
+                    // Destacar a celula marcada na tabela
+                    
+                    STATUS = "sucesso";
+                    
+                    return;
+                }
+            }
+        }
+        STATUS = "falha";
+    }
+    
+    protected void lottery(Mensagem msg){
+        sortPane.setText(String.valueOf(msg.CARTELA.getInt(0)));
+        
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -411,11 +455,13 @@ public class ClienteGUI extends javax.swing.JFrame {
     private javax.swing.JLabel chatLabel;
     private javax.swing.JList<String> clientList;
     private javax.swing.JLabel clientsLabel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel loggedLabel;
     private javax.swing.JTextField msgContent;
@@ -425,6 +471,7 @@ public class ClienteGUI extends javax.swing.JFrame {
     protected javax.swing.JButton sendGame;
     private javax.swing.JButton sendLogout;
     private javax.swing.JButton sendMsg;
+    protected javax.swing.JTextPane sortPane;
     protected javax.swing.JLabel statusLabel;
     private javax.swing.JLabel timerLabel;
     protected javax.swing.JTextPane timerPane;
@@ -591,5 +638,12 @@ public class ClienteGUI extends javax.swing.JFrame {
      */
     public void setLISTACLIENTE(JSONArray LISTACLIENTE) {
         this.LISTACLIENTE = LISTACLIENTE;
+    }
+
+    /**
+     * @return the CARTELA
+     */
+    public JSONArray getCARTELA() {
+        return CARTELA;
     }
 }

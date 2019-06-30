@@ -3,6 +3,7 @@ package cliente;
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
+import javax.swing.JOptionPane;
 
 import org.json.*;
 import projetoSD.*;
@@ -132,6 +133,9 @@ public class Cliente {
                             }
                             
                             case "sorteado":{
+                                refreshGUI("sorteado", msg);
+                                JOptionPane.showConfirmDialog(null, "Marca o Nr. " + msg.CARTELA.getInt(0) + "?");
+                                gui.markTable(msg.CARTELA.getInt(0));
                                 break;
                             }
                             
@@ -199,6 +203,10 @@ public class Cliente {
                         }
                         
                         case "marca":{
+                            msg.COD = gui.getCOD();
+                            msg.STATUS = gui.getSTATUS();
+                            msg.CARTELA = gui.getCARTELA();
+                            
                             break;
                         }
                         
@@ -324,6 +332,8 @@ public class Cliente {
             }
 
             case "sorteado":{
+                gui.lottery(msg);
+                
                 break;
             }
             

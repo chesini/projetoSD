@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
+import projetoSD.ContaTempo;
 import projetoSD.Mensagem;
 
 /**
@@ -22,17 +23,25 @@ import projetoSD.Mensagem;
 public class Bingo extends Thread {
     ArrayList<Socket> sktArray;
     JSONArray players;
+    boolean[] sorteados;
     
     private int running = 0;
     
     public Bingo(ArrayList<Socket> socketArray, JSONArray readyArray){
         sktArray = socketArray;
         players = readyArray;
+        sorteados = new boolean[75];
+        
+        for(int i = 0; i < 75; i++){
+            sorteados[i] = false;
+        }
+        
         this.start();
     }
     
     @Override
     public void run(){
+        
         try{
 
             while (true) {
@@ -50,11 +59,6 @@ public class Bingo extends Thread {
                         System.out.println("Erro JSONException ao sortear cartelas: " + ex);
                     }
                     
-                }
-                
-                if(getRunning() == 2){ // Jogo rolando: sorteio de numeros
-                    // Se timer == 0 sorteia e timer = 10
-                    //System.out.println("Jogo comecou");
                 }
                 
                 
