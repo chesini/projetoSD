@@ -101,7 +101,7 @@ public class ServidorGUI extends javax.swing.JFrame {
         readyLabel.setText("Clientes Habilitados ao jogo:");
 
         timerLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        timerLabel.setText("jLabel1");
+        timerLabel.setText("--");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

@@ -31,6 +31,7 @@ public class ClienteGUI extends javax.swing.JFrame {
     boolean pronto = false;
     private String COD;
     private String STATUS;
+    private String NOME;
     private JSONArray LISTACLIENTE;
     private JSONArray CARTELA;
     private DefaultListModel modelClientList = new DefaultListModel();
@@ -108,6 +109,11 @@ public class ClienteGUI extends javax.swing.JFrame {
                 sendMsgClicked(evt);
             }
         });
+        sendMsg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sendMsgActionPerformed(evt);
+            }
+        });
 
         msgLabel.setText("msgLabel");
 
@@ -127,10 +133,16 @@ public class ClienteGUI extends javax.swing.JFrame {
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        sendGame.setText("sendGame");
+        sendGame.setText("Entrar no Jogo");
+        sendGame.setEnabled(false);
         sendGame.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 sendGameClicked(evt);
+            }
+        });
+        sendGame.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sendGameActionPerformed(evt);
             }
         });
 
@@ -306,6 +318,7 @@ public class ClienteGUI extends javax.swing.JFrame {
         if(this.logged == false){
             this.setCOD("login");
             this.setToSend(true);
+            sendGame.setEnabled(true);
             return;
         }
         
@@ -355,6 +368,14 @@ public class ClienteGUI extends javax.swing.JFrame {
         this.setToSend(true);
     }//GEN-LAST:event_sendLogoutClicked
 
+    private void sendGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendGameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sendGameActionPerformed
+
+    private void sendMsgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendMsgActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sendMsgActionPerformed
+
     
     protected void refreshTable(JSONArray cartela){
         String header[] = {"B", "I", "N", "G", "O"};
@@ -394,12 +415,10 @@ public class ClienteGUI extends javax.swing.JFrame {
             for(int j = 0; j < cartelaTable.getModel().getColumnCount(); j++){
                 //System.out.println("tab: " + Integer.parseInt(cartelaTable.getModel().getValueAt(i, j).toString()));
                 if(Integer.parseInt(cartelaTable.getModel().getValueAt(i, j).toString()) == num){
-                    System.out.println("Marca: [" + i + "][" + j + "]");
+                    //System.out.println("Marca: [" + i + "][" + j + "]");
                     
                     // Destacar a celula marcada na tabela
-                    
-                    STATUS = "sucesso";
-                    
+                    STATUS = "sucesso!";
                     return;
                 }
             }
@@ -645,5 +664,17 @@ public class ClienteGUI extends javax.swing.JFrame {
      */
     public JSONArray getCARTELA() {
         return CARTELA;
+    }
+
+    public void setCARTELA(JSONArray CARTELA) {
+        this.CARTELA = CARTELA;
+    }
+    
+     public String getNOME() {
+        return NOME;
+    }
+
+    public void setNOME(String NOME) {
+        this.NOME = NOME;
     }
 }

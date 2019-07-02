@@ -123,7 +123,7 @@ public class Cliente {
                             
                             case "tempo":{
                                 timer.counting = true;
-                                timer.setCount(30);
+                                timer.setCount(10);
                                 break;
                             }
                             
@@ -135,6 +135,7 @@ public class Cliente {
                             case "sorteado":{
                                 refreshGUI("sorteado", msg);
                                 JOptionPane.showConfirmDialog(null, "Marca o Nr. " + msg.CARTELA.getInt(0) + "?");
+                                //gui.markTable(msg.CARTELA.getInt(0), msg.NOME);
                                 gui.markTable(msg.CARTELA.getInt(0));
                                 break;
                             }
@@ -204,8 +205,9 @@ public class Cliente {
                         
                         case "marca":{
                             msg.COD = gui.getCOD();
+                            msg.NOME = NOME;
                             msg.STATUS = gui.getSTATUS();
-                            msg.CARTELA = gui.getCARTELA();
+                            
                             
                             break;
                         }

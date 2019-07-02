@@ -154,6 +154,7 @@
       </Properties>
       <Events>
         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="sendMsgClicked"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="sendMsgActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="msgLabel">
@@ -215,10 +216,12 @@
     </Component>
     <Component class="javax.swing.JButton" name="sendGame">
       <Properties>
-        <Property name="text" type="java.lang.String" value="sendGame"/>
+        <Property name="text" type="java.lang.String" value="Entrar no Jogo"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="sendGameClicked"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="sendGameActionPerformed"/>
       </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
