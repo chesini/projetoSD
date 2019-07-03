@@ -22,14 +22,15 @@ import projetoSD.Mensagem;
  */
 public class Bingo extends Thread {
     ArrayList<Socket> sktArray;
-    JSONArray players;
+    JSONArray readyArray;
+    Player[] players;
     boolean[] sorteados;
     
     private int running = 0;
     
-    public Bingo(ArrayList<Socket> socketArray, JSONArray readyArray){
-        sktArray = socketArray;
-        players = readyArray;
+    public Bingo(ArrayList<Socket> socketArray, JSONArray rdyArray){
+        sktArray = socketArray;        
+        readyArray = rdyArray;
         sorteados = new boolean[75];
         
         for(int i = 0; i < 75; i++){
@@ -74,6 +75,16 @@ public class Bingo extends Thread {
     public void sortearCartelas() throws IOException, JSONException{ // Gera cartelas aleatorias e as envia para os clientes do JSONArray players
         JSONArray cartela = new JSONArray();
         
+        players = new Player[readyArray.length()];
+        System.out.println("Qtd jogadores " + players.length);
+        
+        for(int i = 0; i < readyArray.length(); i++){
+            players[i] = new Player();
+            players[i].IP = readyArray.getJSONObject(i).getString("IP");
+            players[i].PORTA = readyArray.getJSONObject(i).getString("PORTA");
+            players[i].NOME = readyArray.getJSONObject(i).getString("NOME");
+        }
+        
         int a, b, r;
         a = b = r = 0; // Variaveis para a faixa de valores das colunas
         
@@ -81,7 +92,9 @@ public class Bingo extends Thread {
         
         Random rGen = new Random();
         
-        for(int i = 0; i < players.length(); i++){
+        for(int i = 0; i < players.length; i++){
+            System.out.println("Gerando cartela " + i);
+            
             for(int j = 0; j < 25; j++){
                 unique = false;
 
@@ -128,7 +141,7 @@ public class Bingo extends Thread {
             // Procura em sktArray o socket correspondente ao players(i)
             int k = 0;
             while(k < sktArray.size() &&
-                  0 != Integer.compare(sktArray.get(k).getPort(), Integer.parseInt(players.getJSONObject(i).getString("PORTA")))
+                  true != players[i].PORTA.equals( String.valueOf(sktArray.get(k).getPort()) )
             ) k++;
                         
             msg.COD = "cartela";
@@ -146,6 +159,7 @@ public class Bingo extends Thread {
             }
             
             // Armazena a cartela do jogador no servidor
+            players[i].CARTELA = cartela;
             
             // Limpa a cartela auxiliar
             for(int j = 0; j < 24; j++)

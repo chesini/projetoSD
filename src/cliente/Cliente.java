@@ -204,6 +204,7 @@ public class Cliente {
                         
                         case "marca":{
                             msg.COD = gui.getCOD();
+                            msg.NOME = NOME;
                             msg.STATUS = gui.getSTATUS();
                             msg.CARTELA = gui.getCARTELA();
                             

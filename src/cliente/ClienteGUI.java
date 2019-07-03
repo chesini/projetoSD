@@ -387,8 +387,6 @@ public class ClienteGUI extends javax.swing.JFrame {
     }
     
     protected void markTable(int num){
-        toSend = true;
-        COD = "marca";
         
         for(int i = 0; i < cartelaTable.getModel().getRowCount(); i++){
             for(int j = 0; j < cartelaTable.getModel().getColumnCount(); j++){
@@ -398,13 +396,16 @@ public class ClienteGUI extends javax.swing.JFrame {
                     
                     // Destacar a celula marcada na tabela
                     
+                    COD = "marca";
                     STATUS = "sucesso";
-                    
+                    CARTELA = new JSONArray()
+                            .put(num);
+                    toSend = true;
+        
                     return;
                 }
             }
         }
-        STATUS = "falha";
     }
     
     protected void lottery(Mensagem msg){

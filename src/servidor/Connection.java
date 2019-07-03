@@ -96,14 +96,12 @@ public class Connection extends Thread {
                 gui.timerLabel.setText(String.valueOf(timer.getCount()));
                 
                 if(timer.getCount() == 0 && readyArray.length() > 0 && game.getRunning() != 2){
-                    //System.out.println("AQUII " + timer.getCount());
+                    System.out.println("AQUII " + timer.getCount());
                     game.setRunning(1);
                 }
                 
                 if(timer.getCount() == 0 && game.getRunning() == 2){
                     // Sorteia os numero
-                   
-                        
                     do{
                         r = rGen.nextInt(75) + 1;
                     }while(game.sorteados[r-1] == true);
@@ -278,35 +276,33 @@ public class Connection extends Thread {
         }
         
         if (msgRec.COD.equals("marca")){
+            try{
+                if(msgRec.STATUS.equals("sucesso")){
+                int k = 0;
+                
+                while(k < this.readyArray.length() &&
+                      !this.readyArray.getJSONObject(k).getString("NOME").equals(msgRec.NOME)
+                    ) k++;
+                
+                if(k < this.readyArray.length()){
+                    int num = msgRec.CARTELA.getInt(0);
+                    game.players[k].marcados[num] = true;
+                    
+                }
+            }
+            }catch(JSONException e){
+                
+            }
+            
         }
         
         if (msgRec.COD.equals("bingo")){
+            // Compara game.sorteados com Bingo.players[i].marcados
         }
         
         return retorno;
     }
-    /*private int ContaTempo(int count){
-        timer = new java.util.Timer(); //new timer
-        task = new TimerTask() {
-            int aux = count;
-            public void run() {                
-                System.out.println(Integer.toString(aux)); 
-                //System.out.println(isIt);
-                aux--;
-                if (aux == -1){
-                    timer.cancel(); 
-                    
-                }else if(isIt){
-                    cancel();
-                    timer.cancel();
-                    //isIt = false;
-                }
-            }
-        };
-       // task.cancel();
-       timer.scheduleAtFixedRate(task, 1000, 1000); // =  timer.scheduleAtFixedRate(task, delay, period
-       return 1;
-    }*/
+    
     private void MandarListaCli(Mensagem msgRec, int op){
         Mensagem msgSend = new Mensagem();
         int i = 0;
