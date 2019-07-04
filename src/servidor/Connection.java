@@ -74,7 +74,7 @@ public class Connection extends Thread {
 
     @Override
     public void run(){
-        Random rGen = new Random();
+        
         int r = 0;
         try{
             //System.out.println("try");
@@ -96,16 +96,12 @@ public class Connection extends Thread {
                 gui.timerLabel.setText(String.valueOf(timer.getCount()));
                 
                 if(timer.getCount() == 0 && readyArray.length() > 0 && game.getRunning() != 2){
-                    System.out.println("AQUII " + timer.getCount());
+                    //System.out.println("AQUII " + timer.getCount());
                     game.setRunning(1);
                 }
                 
                 if(timer.getCount() == 0 && game.getRunning() == 2){
-                    // Sorteia os numero
-                    do{
-                        r = rGen.nextInt(75) + 1;
-                    }while(game.sorteados[r-1] == true);
-                    game.sorteados[r-1] = true;
+                    r = game.sorteiaNumero();
 
                     // Envia num sorteado broadcast
                     Mensagem msg = new Mensagem();
@@ -118,7 +114,7 @@ public class Connection extends Thread {
                     timer.setCount(10);
                     
                 }
-                Thread.sleep(100);
+                Thread.sleep(300);
                
             }
         }catch(IOException e){
@@ -285,8 +281,12 @@ public class Connection extends Thread {
                     ) k++;
                 
                 if(k < this.readyArray.length()){
+                    System.out.println("k encontrado");
                     int num = msgRec.CARTELA.getInt(0);
-                    game.players[k].marcados[num] = true;
+                    
+                    if(game.sorteados[num] == true){
+                        game.players[k].marcados[num] = true;
+                    }
                     
                 }
             }
@@ -297,7 +297,64 @@ public class Connection extends Thread {
         }
         
         if (msgRec.COD.equals("bingo")){
+            
+            
+            int k = 0;
+            System.out.println("bingo: " + this.game.players.length + " players");
+            while(k < this.game.players.length &&
+                    !this.game.players[k].NOME.equals(msgRec.NOME)
+                    ) k++;
+            System.out.println("bingo player " + k);
             // Compara game.sorteados com Bingo.players[i].marcados
+            if(k < this.game.players.length){
+                
+                
+                boolean ganhou = true;
+                for(int x = 0; x < this.game.players[k].marcados.length; x++){
+                    
+                    System.out.println(this.game.players[k].marcados[x] + " == " + this.game.sorteados[x]);
+                    
+                    
+                    if(this.game.players[k].marcados[x] != this.game.sorteados[x])
+                        ganhou = false;
+                }
+                
+                if( ganhou ){
+                    
+                    // Manda rbingo: sucesso para os players
+                    for(int i = 0; i < this.game.players.length; i++){
+                        System.out.println("manda rbing");
+                        
+                        int j = 0;
+                        while(j < this.sktArray.size() &&
+                              true != this.game.players[i].IP.equals(sktArray.get(j).getInetAddress().getHostAddress()) &&
+                              true != this.game.players[i].PORTA.equals(sktArray.get(j).getPort())
+                        ) j++;
+                        
+                        if(j < this.sktArray.size()){
+                            retorno.COD = "rbingo";
+                            retorno.STATUS = "sucesso";
+                            retorno.LISTACLIENTE = new JSONArray();
+                            retorno.LISTACLIENTE.put(new JSONObject ()
+                                    .put("NOME", game.players[i].NOME)
+                                    .put("IP", game.players[i].IP)
+                                    .put("PORTA", game.players[i].PORTA)
+                            );
+                            
+                            OutputStream osAux = sktArray.get(j).getOutputStream();
+                            Writer osWriterAux = new OutputStreamWriter(osAux);
+                            BufferedWriter buffWriterAux = new BufferedWriter(osWriterAux);       // aponta o duto de saída para o socket do cliente
+
+                            System.out.println("SERVIDOR -> " + sktArray.get(j).getRemoteSocketAddress() + " :" + retorno.toStr());                    
+                            buffWriterAux.write(retorno.toStr() + "\r\n");
+                            buffWriterAux.flush();
+                            gui.refreshGUI('o', retorno.toStr());
+                        }
+                    }
+                }else{
+                    System.out.println("cartela diferente");
+                }
+            }
         }
         
         return retorno;

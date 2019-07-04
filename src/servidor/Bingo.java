@@ -63,7 +63,7 @@ public class Bingo extends Thread {
                 }
                 
                 
-               Thread.sleep(200);
+               Thread.sleep(300);
             }
         }catch (InterruptedException ex) {
             Logger.getLogger(Bingo.class.getName()).log(Level.SEVERE, null, ex);
@@ -165,6 +165,20 @@ public class Bingo extends Thread {
             for(int j = 0; j < 24; j++)
                 cartela.remove(j);
         }
+        
+    }
+    
+    public int sorteiaNumero(){
+        int r = 0;
+        Random rGen = new Random();
+
+        // Sorteia os numero
+        do{
+            r = rGen.nextInt(75) + 1;
+        }while(sorteados[r-1] == true);
+        sorteados[r-1] = true;
+        
+        return r;
         
     }
 
