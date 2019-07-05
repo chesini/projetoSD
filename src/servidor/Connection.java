@@ -281,11 +281,12 @@ public class Connection extends Thread {
                     ) k++;
                 
                 if(k < this.readyArray.length()){
-                    System.out.println("k encontrado");
-                    int num = msgRec.CARTELA.getInt(0);
                     
-                    if(game.sorteados[num] == true){
-                        game.players[k].marcados[num] = true;
+                    int num = msgRec.CARTELA.getInt(0);
+                    System.out.println("k encontrado: " + k + " - num: " + num);
+                    System.out.println("game.sorteados[num]: " + game.sorteados[num]);
+                    if(game.sorteados[num-1] == true){
+                        game.players[k].marcados[num-1] = true;
                     }
                     
                 }
@@ -315,7 +316,8 @@ public class Connection extends Thread {
                     System.out.println(this.game.players[k].marcados[x] + " == " + this.game.sorteados[x]);
                     
                     
-                    if(this.game.players[k].marcados[x] != this.game.sorteados[x])
+                    if( this.game.players[k].marcados[x] == true &&
+                            this.game.players[k].marcados[x] != this.game.sorteados[x])
                         ganhou = false;
                 }
                 

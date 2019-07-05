@@ -175,8 +175,11 @@ public class Bingo extends Thread {
         // Sorteia os numero
         do{
             r = rGen.nextInt(75) + 1;
+            
         }while(sorteados[r-1] == true);
+        System.out.println("r: " + r);
         sorteados[r-1] = true;
+        System.out.println("sorteados[r-1]: " + sorteados[r-1]);
         
         return r;
         
