@@ -84,8 +84,10 @@ public class ServidorGUI extends javax.swing.JFrame {
             }
         });
 
+        inputLog.setToolTipText("");
         jScrollPane1.setViewportView(inputLog);
 
+        outputLog.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         jScrollPane2.setViewportView(outputLog);
 
         outputTitle.setText("Mensagens Enviadas");
@@ -101,7 +103,7 @@ public class ServidorGUI extends javax.swing.JFrame {
         readyLabel.setText("Clientes Habilitados ao jogo:");
 
         timerLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        timerLabel.setText("jLabel1");
+        timerLabel.setText("- -");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -183,19 +185,19 @@ public class ServidorGUI extends javax.swing.JFrame {
 
     private void sendButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sendButtonMouseClicked
         // TODO add your handling code here:
-        
+        System.exit(0);
 
     }//GEN-LAST:event_sendButtonMouseClicked
 
     
     void refreshGUI(char fluxo, String msg){
         if(fluxo == 'i'){
-            this.inputLog.setText(inputLog.getText().concat(msg) + '\n');
+            this.inputLog.setText(msg.concat('\n' + inputLog.getText()));
             
         }
         
         if(fluxo == 'o'){
-            this.outputLog.setText(outputLog.getText().concat(msg) + '\n');
+            this.outputLog.setText(msg.concat('\n' + outputLog.getText()));
             
         }
         

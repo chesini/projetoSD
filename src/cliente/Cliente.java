@@ -12,6 +12,8 @@ public class Cliente {
     static String serverIP;
     static int serverPort;
     
+    static boolean jogando = false;
+    
     static ClienteGUI gui;
     static String NOME;
     static JSONArray LISTACLIENTE;
@@ -101,6 +103,28 @@ public class Cliente {
                             }
                             
                             case "rbingo":{
+                                try{
+                                    if(msg.STATUS.equals("sucesso")){
+                                        // Se é o cliente: GANHOU
+                                        if(NOME.equals(msg.LISTACLIENTE.getJSONObject(0).getString("NOME"))){
+                                            JOptionPane.showMessageDialog(null, "!!!!!!! VOCÊ GANHOU !!!!!!!");
+                                        }else{
+                                            JOptionPane.showMessageDialog(null, msg.LISTACLIENTE.getJSONObject(0).getString("NOME") + " GANHOU");
+                                        }
+                                        refreshGUI("rbingo", msg);
+                                        jogando = false;
+                                    }else{
+                                        // Se é o cliente: GANHOU
+                                        if(NOME.equals(msg.LISTACLIENTE.getJSONObject(0).getString("NOME"))){
+                                            JOptionPane.showMessageDialog(null, "!!! VOCÊ PEDIU BINGO E FOI NEGADO !!!");
+                                        }else{
+                                            JOptionPane.showMessageDialog(null, "!!! " +  msg.LISTACLIENTE.getJSONObject(0).getString("NOME") + " PEDIU BINGO E FOI NEGADO !!!");
+                                        }
+                                    }
+                                }catch(JSONException e){
+
+                                }
+                                
                                 break;
                             }
                             
@@ -129,13 +153,18 @@ public class Cliente {
                             
                             case "cartela":{
                                 refreshGUI("cartela", msg);
+                                jogando = true;
                                 break;
                             }
                             
                             case "sorteado":{
-                                refreshGUI("sorteado", msg);
-                                JOptionPane.showConfirmDialog(null, "Marca o Nr. " + msg.CARTELA.getInt(0) + "?");
-                                gui.markTable(msg.CARTELA.getInt(0));
+                                if(jogando){
+                                    refreshGUI("sorteado", msg);
+                                    if(0 == JOptionPane.showConfirmDialog(null, "Marca o Nr. " + msg.CARTELA.getInt(0) + "?")){
+                                        gui.markTable(msg.CARTELA.getInt(0));
+                                    }
+                                }
+                                
                                 break;
                             }
                             
@@ -204,6 +233,7 @@ public class Cliente {
                         
                         case "marca":{
                             msg.COD = gui.getCOD();
+                            msg.NOME = NOME;
                             msg.STATUS = gui.getSTATUS();
                             msg.CARTELA = gui.getCARTELA();
                             
@@ -211,6 +241,9 @@ public class Cliente {
                         }
                         
                         case "bingo":{
+                            msg.COD = gui.getCOD();
+                            msg.NOME = NOME;
+                            
                             break;
                         }
                             
@@ -294,7 +327,13 @@ public class Cliente {
             
             case "rpronto":{
                 if(msg.STATUS != null && msg.STATUS.equals("falha")){
+                    gui.sortPane.setText("");
+                    gui.sortLabel.setText("Nenhum número sorteado");
+                    gui.sendBingo.setEnabled(false);
+                    gui.refreshTable(null);
                     gui.sendGame.setText("Entrar no jogo");
+                    gui.pronto = false;
+                    
                 }
                 break;
             }
@@ -327,12 +366,25 @@ public class Cliente {
             case "cartela":{
                 CARTELA = msg.CARTELA;
                 gui.refreshTable(CARTELA);
+                gui.sendBingo.setEnabled(true);
                 
                 break;
             }
 
             case "sorteado":{
+                gui.sortLabel.setText("Último número sorteado");
                 gui.lottery(msg);
+                
+                break;
+            }
+            
+            case "rbingo": {
+                gui.sortPane.setText("");
+                gui.sortLabel.setText("Nenhum número sorteado");
+                gui.sendBingo.setEnabled(false);
+                gui.refreshTable(null);
+                gui.sendGame.setText("Entrar no jogo");
+                gui.pronto = false;
                 
                 break;
             }

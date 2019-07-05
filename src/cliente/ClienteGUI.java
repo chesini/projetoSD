@@ -5,7 +5,7 @@
  */
 package cliente;
 
-import java.awt.Color;
+import com.sun.prism.paint.Color;
 import java.awt.Component;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
@@ -98,7 +98,8 @@ public class ClienteGUI extends javax.swing.JFrame {
         timerLabel = new javax.swing.JLabel();
         jScrollPane6 = new javax.swing.JScrollPane();
         sortPane = new javax.swing.JTextPane();
-        jLabel1 = new javax.swing.JLabel();
+        sortLabel = new javax.swing.JLabel();
+        sendBingo = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -196,8 +197,17 @@ public class ClienteGUI extends javax.swing.JFrame {
         sortPane.setEnabled(false);
         jScrollPane6.setViewportView(sortPane);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel1.setText("Nenhum número sorteado");
+        sortLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        sortLabel.setText("Nenhum número sorteado");
+
+        sendBingo.setFont(new java.awt.Font("Tahoma", 3, 24)); // NOI18N
+        sendBingo.setText("PEDIR BINGO");
+        sendBingo.setEnabled(false);
+        sendBingo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                sendBingoMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -244,10 +254,11 @@ public class ClienteGUI extends javax.swing.JFrame {
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel1)
+                    .addComponent(sortLabel)
                     .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sendGame))
+                    .addComponent(sendGame)
+                    .addComponent(sendBingo))
                 .addContainerGap(31, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -289,8 +300,10 @@ public class ClienteGUI extends javax.swing.JFrame {
                                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(76, 76, 76)
-                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(sendBingo)
+                                .addGap(35, 35, 35)
+                                .addComponent(sortLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
@@ -344,6 +357,11 @@ public class ClienteGUI extends javax.swing.JFrame {
             this.setCOD("pronto");
             this.setSTATUS("falha");
             this.sendGame.setText("Entrar no jogo");
+            sortPane.setText("");
+            sortLabel.setText("Nenhum número sorteado");
+            sendBingo.setEnabled(false);
+            refreshTable(null);
+            pronto = false;
         }
         this.setToSend(true);
         
@@ -355,14 +373,34 @@ public class ClienteGUI extends javax.swing.JFrame {
         this.setToSend(true);
     }//GEN-LAST:event_sendLogoutClicked
 
+    private void sendBingoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sendBingoMouseClicked
+        // TODO add your handling code here:
+        this.setCOD("bingo");
+        this.setToSend(true);
+    }//GEN-LAST:event_sendBingoMouseClicked
+
     
     protected void refreshTable(JSONArray cartela){
         String header[] = {"B", "I", "N", "G", "O"};
         int matriz[][] = new int[5][5];
-        System.out.println(cartela.toString());
         int i = 0;
         int j = 0;
         int k = 0;
+        
+        if(cartela == null){
+            for(i = 0; i < matriz.length; i++){
+
+                for(j = 0; j < matriz[i].length; j++){
+                    cartelaTable.getModel().setValueAt(null, i, j);
+                    //System.out.print("[" + i + "]" + "[" + j + "]" + matriz[i][j] + " ");
+                }
+                //System.out.print("\n");
+            }
+            
+            return;
+        }
+        
+        System.out.println(cartela.toString());
         
         while((i * j) < cartela.length()){
             j = 0;
@@ -387,28 +425,37 @@ public class ClienteGUI extends javax.swing.JFrame {
     }
     
     protected void markTable(int num){
-        toSend = true;
-        COD = "marca";
         
         for(int i = 0; i < cartelaTable.getModel().getRowCount(); i++){
             for(int j = 0; j < cartelaTable.getModel().getColumnCount(); j++){
                 //System.out.println("tab: " + Integer.parseInt(cartelaTable.getModel().getValueAt(i, j).toString()));
-                if(Integer.parseInt(cartelaTable.getModel().getValueAt(i, j).toString()) == num){
-                    System.out.println("Marca: [" + i + "][" + j + "]");
+                try{
+                    if(Integer.parseInt(cartelaTable.getModel().getValueAt(i, j).toString()) == num){
+                        System.out.println("Marca: [" + i + "][" + j + "]");
+
+                        cartelaTable.getModel().setValueAt("==" + String.valueOf(num) + "==", i, j);
+
+                        COD = "marca";
+                        STATUS = "sucesso";
+                        CARTELA = new JSONArray()
+                                .put(num);
+                        toSend = true;
+
+                        return;
+                    }
+                }catch(NumberFormatException e){
                     
-                    // Destacar a celula marcada na tabela
-                    
-                    STATUS = "sucesso";
-                    
-                    return;
                 }
             }
         }
-        STATUS = "falha";
     }
     
     protected void lottery(Mensagem msg){
-        sortPane.setText(String.valueOf(msg.CARTELA.getInt(0)));
+        try{
+            sortPane.setText(String.valueOf(msg.CARTELA.getInt(0)));
+        }catch(Exception e){
+            
+        }
         
     }
     
@@ -455,7 +502,6 @@ public class ClienteGUI extends javax.swing.JFrame {
     private javax.swing.JLabel chatLabel;
     private javax.swing.JList<String> clientList;
     private javax.swing.JLabel clientsLabel;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -468,9 +514,11 @@ public class ClienteGUI extends javax.swing.JFrame {
     private javax.swing.JLabel msgLabel;
     protected javax.swing.JTextPane readyList;
     private javax.swing.JLabel readyTitle;
+    protected javax.swing.JButton sendBingo;
     protected javax.swing.JButton sendGame;
     private javax.swing.JButton sendLogout;
     private javax.swing.JButton sendMsg;
+    protected javax.swing.JLabel sortLabel;
     protected javax.swing.JTextPane sortPane;
     protected javax.swing.JLabel statusLabel;
     private javax.swing.JLabel timerLabel;
