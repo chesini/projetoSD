@@ -5,7 +5,7 @@
  */
 package cliente;
 
-import java.awt.Color;
+import com.sun.prism.paint.Color;
 import java.awt.Component;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
@@ -357,6 +357,11 @@ public class ClienteGUI extends javax.swing.JFrame {
             this.setCOD("pronto");
             this.setSTATUS("falha");
             this.sendGame.setText("Entrar no jogo");
+            sortPane.setText("");
+            sortLabel.setText("Nenhum número sorteado");
+            sendBingo.setEnabled(false);
+            refreshTable(null);
+            pronto = false;
         }
         this.setToSend(true);
         
@@ -378,10 +383,24 @@ public class ClienteGUI extends javax.swing.JFrame {
     protected void refreshTable(JSONArray cartela){
         String header[] = {"B", "I", "N", "G", "O"};
         int matriz[][] = new int[5][5];
-        System.out.println(cartela.toString());
         int i = 0;
         int j = 0;
         int k = 0;
+        
+        if(cartela == null){
+            for(i = 0; i < matriz.length; i++){
+
+                for(j = 0; j < matriz[i].length; j++){
+                    cartelaTable.getModel().setValueAt(null, i, j);
+                    //System.out.print("[" + i + "]" + "[" + j + "]" + matriz[i][j] + " ");
+                }
+                //System.out.print("\n");
+            }
+            
+            return;
+        }
+        
+        System.out.println(cartela.toString());
         
         while((i * j) < cartela.length()){
             j = 0;
@@ -410,25 +429,33 @@ public class ClienteGUI extends javax.swing.JFrame {
         for(int i = 0; i < cartelaTable.getModel().getRowCount(); i++){
             for(int j = 0; j < cartelaTable.getModel().getColumnCount(); j++){
                 //System.out.println("tab: " + Integer.parseInt(cartelaTable.getModel().getValueAt(i, j).toString()));
-                if(Integer.parseInt(cartelaTable.getModel().getValueAt(i, j).toString()) == num){
-                    System.out.println("Marca: [" + i + "][" + j + "]");
+                try{
+                    if(Integer.parseInt(cartelaTable.getModel().getValueAt(i, j).toString()) == num){
+                        System.out.println("Marca: [" + i + "][" + j + "]");
+
+                        cartelaTable.getModel().setValueAt("==" + String.valueOf(num) + "==", i, j);
+
+                        COD = "marca";
+                        STATUS = "sucesso";
+                        CARTELA = new JSONArray()
+                                .put(num);
+                        toSend = true;
+
+                        return;
+                    }
+                }catch(NumberFormatException e){
                     
-                    // Destacar a celula marcada na tabela
-                    
-                    COD = "marca";
-                    STATUS = "sucesso";
-                    CARTELA = new JSONArray()
-                            .put(num);
-                    toSend = true;
-        
-                    return;
                 }
             }
         }
     }
     
     protected void lottery(Mensagem msg){
-        sortPane.setText(String.valueOf(msg.CARTELA.getInt(0)));
+        try{
+            sortPane.setText(String.valueOf(msg.CARTELA.getInt(0)));
+        }catch(Exception e){
+            
+        }
         
     }
     

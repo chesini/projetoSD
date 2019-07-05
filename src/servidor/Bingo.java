@@ -76,7 +76,7 @@ public class Bingo extends Thread {
         JSONArray cartela = new JSONArray();
         
         players = new Player[readyArray.length()];
-        System.out.println("Qtd jogadores " + players.length);
+        System.out.println("Qtd jogadores: " + players.length);
         
         for(int i = 0; i < readyArray.length(); i++){
             players[i] = new Player();
@@ -93,7 +93,7 @@ public class Bingo extends Thread {
         Random rGen = new Random();
         
         for(int i = 0; i < players.length; i++){
-            System.out.println("Gerando cartela " + i);
+            //System.out.println("Gerando cartela " + i);
             
             for(int j = 0; j < 25; j++){
                 unique = false;
@@ -152,7 +152,7 @@ public class Bingo extends Thread {
                 Writer osWriterAux = new OutputStreamWriter(osAux);
                 BufferedWriter buffWriterAux = new BufferedWriter(osWriterAux);
 
-                System.out.println("SERVIDOR -> " + sktArray.get(k).getRemoteSocketAddress() + " :" + msg.toStr());                    
+                System.out.println("SERVIDOR(Bingo) -> " + sktArray.get(k).getRemoteSocketAddress() + " :" + msg.toStr());                    
                 buffWriterAux.write(msg.toStr() + "\r\n");
                 buffWriterAux.flush();
                 //gui.refreshGUI('o', msg.toStr());
@@ -177,9 +177,7 @@ public class Bingo extends Thread {
             r = rGen.nextInt(75) + 1;
             
         }while(sorteados[r-1] == true);
-        System.out.println("r: " + r);
         sorteados[r-1] = true;
-        System.out.println("sorteados[r-1]: " + sorteados[r-1]);
         
         return r;
         

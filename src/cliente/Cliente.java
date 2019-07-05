@@ -104,15 +104,26 @@ public class Cliente {
                             
                             case "rbingo":{
                                 try{
-                                    // Se é o cliente: GANHOU
-                                    if(NOME.equals(msg.LISTACLIENTE.getJSONObject(0).getString("NOME"))){
-                                        JOptionPane.showMessageDialog(null, "!!!!!!! VOCÊ GANHOU !!!!!!!");                                
+                                    if(msg.STATUS.equals("sucesso")){
+                                        // Se é o cliente: GANHOU
+                                        if(NOME.equals(msg.LISTACLIENTE.getJSONObject(0).getString("NOME"))){
+                                            JOptionPane.showMessageDialog(null, "!!!!!!! VOCÊ GANHOU !!!!!!!");
+                                        }else{
+                                            JOptionPane.showMessageDialog(null, msg.LISTACLIENTE.getJSONObject(0).getString("NOME") + " GANHOU");
+                                        }
+                                        refreshGUI("rbingo", msg);
+                                        jogando = false;
+                                    }else{
+                                        // Se é o cliente: GANHOU
+                                        if(NOME.equals(msg.LISTACLIENTE.getJSONObject(0).getString("NOME"))){
+                                            JOptionPane.showMessageDialog(null, "!!! VOCÊ PEDIU BINGO E FOI NEGADO !!!");
+                                        }else{
+                                            JOptionPane.showMessageDialog(null, "!!! " +  msg.LISTACLIENTE.getJSONObject(0).getString("NOME") + " PEDIU BINGO E FOI NEGADO !!!");
+                                        }
                                     }
                                 }catch(JSONException e){
-                                    
+
                                 }
-                                
-                                refreshGUI("rbingo", msg);
                                 
                                 break;
                             }
@@ -149,8 +160,9 @@ public class Cliente {
                             case "sorteado":{
                                 if(jogando){
                                     refreshGUI("sorteado", msg);
-                                    JOptionPane.showConfirmDialog(null, "Marca o Nr. " + msg.CARTELA.getInt(0) + "?");
-                                    gui.markTable(msg.CARTELA.getInt(0));
+                                    if(0 == JOptionPane.showConfirmDialog(null, "Marca o Nr. " + msg.CARTELA.getInt(0) + "?")){
+                                        gui.markTable(msg.CARTELA.getInt(0));
+                                    }
                                 }
                                 
                                 break;
@@ -315,7 +327,12 @@ public class Cliente {
             
             case "rpronto":{
                 if(msg.STATUS != null && msg.STATUS.equals("falha")){
+                    gui.sortPane.setText("");
+                    gui.sortLabel.setText("Nenhum número sorteado");
+                    gui.sendBingo.setEnabled(false);
+                    gui.refreshTable(null);
                     gui.sendGame.setText("Entrar no jogo");
+                    gui.pronto = false;
                     
                 }
                 break;
@@ -355,6 +372,7 @@ public class Cliente {
             }
 
             case "sorteado":{
+                gui.sortLabel.setText("Último número sorteado");
                 gui.lottery(msg);
                 
                 break;
@@ -363,6 +381,10 @@ public class Cliente {
             case "rbingo": {
                 gui.sortPane.setText("");
                 gui.sortLabel.setText("Nenhum número sorteado");
+                gui.sendBingo.setEnabled(false);
+                gui.refreshTable(null);
+                gui.sendGame.setText("Entrar no jogo");
+                gui.pronto = false;
                 
                 break;
             }
